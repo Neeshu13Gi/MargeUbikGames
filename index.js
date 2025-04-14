@@ -150,6 +150,66 @@ app.get('/admin', async (req, res) => {
     `);
   });
   
+  
+// Admin Dashboard
+app.get('/admin-login', (req, res) => {
+    res.send(`
+      <html>
+        <head>
+          <title>Admin Login</title>
+          <style>
+            body {
+              font-family: sans-serif;
+              background: #f0f8ff;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 100vh;
+            }
+            .login-box {
+              background: white;
+              padding: 30px;
+              border-radius: 10px;
+              box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+              text-align: center;
+            }
+            input {
+              padding: 10px;
+              font-size: 16px;
+              width: 80%;
+              margin-bottom: 20px;
+            }
+            button {
+              padding: 10px 20px;
+              background: #4facfe;
+              color: white;
+              border: none;
+              border-radius: 5px;
+              font-size: 16px;
+              cursor: pointer;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="login-box">
+            <h2>🔐 Admin Login</h2>
+            <form onsubmit="event.preventDefault(); login();">
+              <input type="password" id="pwd" placeholder="Enter Admin Password" />
+              <br/>
+              <button type="submit">Login</button>
+            </form>
+          </div>
+          <script>
+            function login() {
+              const pwd = document.getElementById('pwd').value;
+              window.location.href = '/admin?password=' + encodeURIComponent(pwd);
+            }
+          </script>
+        </body>
+      </html>
+    `);
+  });
+  
   app.get('/admin/:game', async (req, res) => {
     const adminPassword = 'Ubik@123';
     const game = req.params.game;
