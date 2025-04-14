@@ -64,58 +64,165 @@ app.patch('/save-score', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// Admin Dashboard
 app.get('/admin', async (req, res) => {
-  const password = req.query.password;
-  const game = req.query.game || 'all';
-
-  if (password !== 'Ubik@123') return res.status(401).send('Unauthorized');
-
-  const fetchData = async (model, gameName) => {
-    const data = await model.find();
-    return data.map(d => ({ ...d.toObject(), gameName }));
-  };
-
-  let allData = [];
-
-  if (game === 'game1' || game === 'all') allData.push(...await fetchData(Player1, 'game1'));
-  if (game === 'game2' || game === 'all') allData.push(...await fetchData(Player2, 'game2'));
-  if (game === 'game3' || game === 'all') allData.push(...await fetchData(Player3, 'game3'));
-
-  res.send(`
-    <html><head><title>Admin</title>
-    <style>
-      body { font-family: Arial; }
-      table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-      th, td { border: 1px solid #ddd; padding: 10px; }
-      button { margin: 4px; padding: 8px 12px; }
-    </style></head>
-    <body>
-      <h1>Admin Dashboard</h1>
-      <button onclick="filter('all')">All</button>
-      <button onclick="filter('game1')">Game1</button>
-      <button onclick="filter('game2')">Game2</button>
-      <button onclick="filter('game3')">Game3</button>
-
-      <table>
-        <tr><th>Name</th><th>Email</th><th>Phone</th><th>Score</th><th>Stars</th><th>Game</th></tr>
-        ${allData.map(p => `
-          <tr>
-            <td>${p.name}</td><td>${p.email}</td><td>${p.phone}</td>
-            <td>${p.score}</td><td>${p.stars}</td><td>${p.gameName}</td>
-          </tr>`).join('')}
-      </table>
-
-      <script>
-        function filter(game) {
-          const pwd = new URLSearchParams(window.location.search).get('password');
-          window.location.href = '/admin?password=' + pwd + '&game=' + game;
-        }
-      </script>
-    </body></html>
-  `);
-});
-
+    const adminPassword = 'Ubik@123'; // change if needed
+  
+    if (req.query.password !== adminPassword) {
+      return res.status(401).send('❌ Unauthorized. Incorrect password.');
+    }
+  
+    res.send(`
+      <html>
+        <head>
+          <title>Admin Panel</title>
+          <style>
+            body {
+              font-family: Arial;
+              background: #f2f2f2;
+              text-align: center;
+              padding-top: 100px;
+            }
+            h1 {
+              color: #333;
+            }
+            button {
+              padding: 12px 30px;
+              margin: 15px;
+              background-color: #4facfe;
+              color: white;
+              border: none;
+              border-radius: 8px;
+              font-size: 18px;
+              cursor: pointer;
+            }
+            button:hover {
+              background-color: #00c6ff;
+            }
+          </style>
+        </head>
+        <body>
+          <h1>🎮 Admin Dashboard</h1>
+          <p>Select Game:</p>
+          <button onclick="location.href='/admin/game1?password=${req.query.password}'">Game 1 Skin</button>
+          <button onclick="location.href='/admin/game2?password=${req.query.password}'">Game 2</button>
+          <button onclick="location.href='/admin/game3?password=${req.query.password}'">Game 3 Hair Growth</button>
+        </body>
+      </html>
+    `);
+  });
+  
+// Admin Dashboard
+app.get('/admin-login', (req, res) => {
+    res.send(`
+      <html>
+        <head>
+          <title>Admin Login</title>
+          <style>
+            body {
+              font-family: sans-serif;
+              background: #f0f8ff;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 100vh;
+            }
+            .login-box {
+              background: white;
+              padding: 30px;
+              border-radius: 10px;
+              box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+              text-align: center;
+            }
+            input {
+              padding: 10px;
+              font-size: 16px;
+              width: 80%;
+              margin-bottom: 20px;
+            }
+            button {
+              padding: 10px 20px;
+              background: #4facfe;
+              color: white;
+              border: none;
+              border-radius: 5px;
+              font-size: 16px;
+              cursor: pointer;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="login-box">
+            <h2>🔐 Admin Login</h2>
+            <form onsubmit="event.preventDefault(); login();">
+              <input type="password" id="pwd" placeholder="Enter Admin Password" />
+              <br/>
+              <button type="submit">Login</button>
+            </form>
+          </div>
+          <script>
+            function login() {
+              const pwd = document.getElementById('pwd').value;
+              window.location.href = '/admin?password=' + encodeURIComponent(pwd);
+            }
+          </script>
+        </body>
+      </html>
+    `);
+  });
+  
+  app.get('/admin/:game', async (req, res) => {
+    const adminPassword = 'Ubik@123';
+    const game = req.params.game;
+    const pass = req.query.password;
+  
+    if (pass !== adminPassword) {
+      return res.status(401).send('❌ Unauthorized');
+    }
+  
+    let players = [];
+  
+    try {
+      if (game === 'game1') {
+        players = await Game1Player.find();
+      } else if (game === 'game2') {
+        players = await Game2Player.find();
+      } else if (game === 'game3') {
+        players = await Game3Player.find();
+      } else {
+        return res.status(404).send('Game not found');
+      }
+  
+      res.send(`
+        <html>
+          <head>
+            <title>${game} Players</title>
+            <style>
+              table { width: 90%; margin: auto; border-collapse: collapse; }
+              th, td { padding: 8px; border: 1px solid #ccc; text-align: center; }
+              th { background: #4facfe; color: white; }
+            </style>
+          </head>
+          <body>
+            <h2 style="text-align:center;">Player Data for ${game}</h2>
+            <table>
+              <tr><th>Name</th><th>Email</th><th>Phone</th><th>Score</th><th>Stars</th></tr>
+              ${players.map(p => `
+                <tr>
+                  <td>${p.name || '-'}</td>
+                  <td>${p.email || '-'}</td>
+                  <td>${p.phone || '-'}</td>
+                  <td>${p.score || 0}</td>
+                  <td>${p.stars || 0}</td>
+                </tr>`).join('')}
+            </table>
+          </body>
+        </html>
+      `);
+    } catch (err) {
+      console.log(err);
+      res.status(500).send('Server Error');
+    }
+  });
+  
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server on port ${PORT}`));
