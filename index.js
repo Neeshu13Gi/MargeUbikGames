@@ -77,94 +77,74 @@ app.get('/admin', async (req, res) => {
           <title>Admin Panel</title>
           <style>
             body {
-              font-family: Arial;
-              background: #f2f2f2;
+              font-family: 'Arial', sans-serif;
+              background: #f4f7fc;
+              margin: 0;
+              padding: 0;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              height: 100vh;
+            }
+            .container {
               text-align: center;
-              padding-top: 100px;
+              background: white;
+              border-radius: 10px;
+              padding: 40px;
+              box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+              width: 80%;
+              max-width: 500px;
             }
             h1 {
               color: #333;
+              font-size: 32px;
+              margin-bottom: 20px;
+            }
+            p {
+              font-size: 18px;
+              color: #555;
+              margin-bottom: 20px;
+            }
+            .btn-group {
+              margin-top: 30px;
             }
             button {
-              padding: 12px 30px;
-              margin: 15px;
+              padding: 12px 25px;
+              margin: 10px;
               background-color: #4facfe;
               color: white;
               border: none;
               border-radius: 8px;
               font-size: 18px;
               cursor: pointer;
+              transition: background-color 0.3s ease;
             }
             button:hover {
               background-color: #00c6ff;
             }
-          </style>
-        </head>
-        <body>
-          <h1>🎮 Admin Dashboard</h1>
-          <p>Select Game:</p>
-          <button onclick="location.href='/admin/game1?password=${req.query.password}'">Game 1 Skin</button>
-          <button onclick="location.href='/admin/game2?password=${req.query.password}'">Game 2</button>
-          <button onclick="location.href='/admin/game3?password=${req.query.password}'">Game 3 Hair Growth</button>
-        </body>
-      </html>
-    `);
-  });
-  
-// Admin Dashboard
-app.get('/admin-login', (req, res) => {
-    res.send(`
-      <html>
-        <head>
-          <title>Admin Login</title>
-          <style>
-            body {
-              font-family: sans-serif;
-              background: #f0f8ff;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              height: 100vh;
+            button:focus {
+              outline: none;
             }
-            .login-box {
-              background: white;
-              padding: 30px;
-              border-radius: 10px;
-              box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-              text-align: center;
-            }
-            input {
-              padding: 10px;
-              font-size: 16px;
-              width: 80%;
-              margin-bottom: 20px;
-            }
-            button {
-              padding: 10px 20px;
-              background: #4facfe;
-              color: white;
-              border: none;
-              border-radius: 5px;
-              font-size: 16px;
-              cursor: pointer;
+            .footer {
+              margin-top: 30px;
+              font-size: 14px;
+              color: #777;
             }
           </style>
         </head>
         <body>
-          <div class="login-box">
-            <h2>🔐 Admin Login</h2>
-            <form onsubmit="event.preventDefault(); login();">
-              <input type="password" id="pwd" placeholder="Enter Admin Password" />
-              <br/>
-              <button type="submit">Login</button>
-            </form>
+          <div class="container">
+            <h1>🎮 Admin Dashboard</h1>
+            <p>Welcome to the admin panel. Please choose a game to view the player data:</p>
+            <div class="btn-group">
+              <button onclick="location.href='/admin/game1?password=${req.query.password}'">Game 1 Skin</button>
+              <button onclick="location.href='/admin/game2?password=${req.query.password}'">Game 2</button>
+              <button onclick="location.href='/admin/game3?password=${req.query.password}'">Game 3 Hair Growth</button>
+            </div>
+            <div class="footer">
+              <p>Powered by your Game Management System</p>
+            </div>
           </div>
-          <script>
-            function login() {
-              const pwd = document.getElementById('pwd').value;
-              window.location.href = '/admin?password=' + encodeURIComponent(pwd);
-            }
-          </script>
         </body>
       </html>
     `);
