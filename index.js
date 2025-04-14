@@ -223,11 +223,11 @@ app.get('/admin-login', (req, res) => {
   
     try {
       if (game === 'game1') {
-        players = await Game1Player.find();
+        players = await Player1.find();
       } else if (game === 'game2') {
-        players = await Game2Player.find();
+        players = await Player2.find();
       } else if (game === 'game3') {
-        players = await Game3Player.find();
+        players = await Player3.find();
       } else {
         return res.status(404).send('Game not found');
       }
@@ -237,13 +237,17 @@ app.get('/admin-login', (req, res) => {
           <head>
             <title>${game} Players</title>
             <style>
-              table { width: 90%; margin: auto; border-collapse: collapse; }
-              th, td { padding: 8px; border: 1px solid #ccc; text-align: center; }
-              th { background: #4facfe; color: white; }
+              body { font-family: Arial; background: #f7f9fc; padding: 30px; }
+              h2 { text-align: center; color: #333; }
+              table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+              th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+              th { background-color: #4facfe; color: white; }
+              tr:nth-child(even) { background-color: #f2f2f2; }
+              tr:hover { background-color: #e6f7ff; }
             </style>
           </head>
           <body>
-            <h2 style="text-align:center;">Player Data for ${game}</h2>
+            <h2>📊 Player Data for ${game}</h2>
             <table>
               <tr><th>Name</th><th>Email</th><th>Phone</th><th>Score</th><th>Stars</th></tr>
               ${players.map(p => `
@@ -251,15 +255,15 @@ app.get('/admin-login', (req, res) => {
                   <td>${p.name || '-'}</td>
                   <td>${p.email || '-'}</td>
                   <td>${p.phone || '-'}</td>
-                  <td>${p.score || 0}</td>
-                  <td>${p.stars || 0}</td>
+                  <td>${p.score ?? 0}</td>
+                  <td>${p.stars ?? 0}</td>
                 </tr>`).join('')}
             </table>
           </body>
         </html>
       `);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       res.status(500).send('Server Error');
     }
   });
