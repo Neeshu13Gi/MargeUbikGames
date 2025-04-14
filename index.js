@@ -137,9 +137,10 @@ app.get('/admin', async (req, res) => {
             <h1>🎮 Admin Dashboard</h1>
             <p>Welcome to the admin panel. Please choose a game to view the player data:</p>
             <div class="btn-group">
-              <button onclick="location.href='/admin/game1?password=${req.query.password}'">Game 1 Skin</button>
-              <button onclick="location.href='/admin/game2?password=${req.query.password}'">Game 2</button>
-              <button onclick="location.href='/admin/game3?password=${req.query.password}'">Game 3 Hair Growth</button>
+             <button style="background-color:#28a745;" onclick="location.href='/admin/game1?password=${req.query.password}'">Laser Game</button>
+            <button style="background-color:#ff9800;" onclick="location.href='/admin/game2?password=${req.query.password}'">Skin Match</button>
+            <button style="background-color:#9c27b0;" onclick="location.href='/admin/game3?password=${req.query.password}'">Hair Growth Game</button>
+
             </div>
             <div class="footer">
               <p>Powered by your Game Management System</p>
